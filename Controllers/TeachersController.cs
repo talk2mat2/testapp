@@ -27,10 +27,42 @@ namespace testapp.Controllers
 
      
         [HttpPost("RegisterTeacher")]
-        public ActionResult<ResponseData<TeachetsDto>> Post([FromBody] TeachetsDto value)
+        public ActionResult<ResponseData<dynamic>> Post([FromBody] TeachetsDto request)
         {
+        
+            DateTime dDate;
+            if (DateTime.TryParse(request.DateOfBirth, out dDate))
+            {
+           
+                DateTime now = DateTime.Today;
+                DateTime bdate= Convert.ToDateTime(request.DateOfBirth);
+                int age = now.Year - bdate.Year;
+                if(age > 21)
+                {
 
-            return Ok(new ResponseData<TeachetsDto> { Data = value, ResponseCode = 200, ResponseMessage = "successfully added" });
+                    var NewTeacher = new Teachers 
+                    { DateOfBirth = request.DateOfBirth,
+                    Name = request.Name, NationalIDnumber = request.NationalIDnumber,
+                    Salary = request.Salary, Title = request.Title, Surname = request.Surname,
+                    TeacherNumber = request.TeacherNumber };
+
+                    _AppDbContext.Teachers.Add(NewTeacher);
+                    _AppDbContext.SaveChanges();
+                  return Ok(new ResponseData<TeachetsDto> { Data =request, ResponseCode = 200, ResponseMessage = "successfully added" });
+                }
+                else
+                {
+                    return Ok(new ResponseData<dynamic> { Data = null, ResponseCode = 502, ResponseMessage = "Teachers age should above 21" });
+                }
+             
+            }
+            else
+            {
+              
+                return BadRequest(new ResponseData<dynamic> { Data = null, ResponseCode = 501, ResponseMessage = "invalid date format" });
+            }
+
+          
         }
 
        
