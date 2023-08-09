@@ -19,24 +19,21 @@ namespace testapp.Controllers
         }
 
         [HttpGet("getAllTeachers")]
-        public ActionResult<ResponseData<Teachers>>  Get()
+        public ActionResult<ResponseData<List<Teachers>>>  Get()
         {
             var values= _AppDbContext.Teachers.ToList();
-            return Ok(new ResponseData<Teachers> { ResponseCode = 200, Data = values, ResponseMessage = "successfully retrieved all teachers" });
+            return Ok(new ResponseData<List<Teachers>> { ResponseCode = 200, Data =values, ResponseMessage = "successfully retrieved all teachers" });
         }
 
      
         [HttpPost("RegisterTeacher")]
-        public void Post([FromBody] string value)
+        public ActionResult<ResponseData<TeachetsDto>> Post([FromBody] TeachetsDto value)
         {
 
+            return Ok(new ResponseData<TeachetsDto> { Data = value, ResponseCode = 200, ResponseMessage = "successfully added" });
         }
 
-        // PUT api/<TeachersController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+       
 
         // DELETE api/<TeachersController>/5
         [HttpDelete("{id}")]
